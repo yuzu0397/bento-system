@@ -500,9 +500,7 @@ if not st.session_state.booted:
 # 起動完了後のメインコンテンツ
 # ==========================================
 
-# リアルタイムの時刻と天気を取得
-current_time_str = datetime.now().strftime("%Y/%m/%d %H:%M:%S")
-weather_info_str = get_nishikyogoku_weather()
+
 
 # --- ヘッダー部分（左：ロゴ、中央：タイトル、右：スペック＆環境表） ---
 col1, col2, col3 = st.columns([1.2, 2.2, 2.5])
@@ -520,10 +518,7 @@ with col3:
         <div class="popup-title">SYSTEM SPEC & ENVIRONMENT DATA</div>
         <div class="popup-grid">
             <div class="popup-item">
-                現在時刻: <span class="env-data">{current_time_str}</span>
-            </div>
-            <div class="popup-item">
-                京都市西京極新明町: <span class="env-data" style="color: #ff7b72;">{weather_info_str}</span>
+                an>
             </div>
             <div class="popup-item">
                 RAM: {used_ram_gb} GB / {total_ram_gb} GB 
