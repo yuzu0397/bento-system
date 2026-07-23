@@ -2,8 +2,6 @@ import streamlit as st
 import psutil
 import time
 import base64
-import requests
-from datetime import datetime
 
 # ページ設定
 st.set_page_config(page_title="BENTO System v2.0", layout="wide", page_icon="🍱")
@@ -24,31 +22,6 @@ google_img_base64 = get_base64_image("Google.jpg")
 apple_img_base64 = get_base64_image("Apple.jpg")
 sony_img_base64 = get_base64_image("Sony.jpg")
 xperia_img_base64 = get_base64_image("Xperia.jpg")
-
-# --- 天気取得関数（京都市西京極新明町付近の緯度経度） ---
-def get_nishikyogoku_weather():
-    try:
-        # 西京極付近の座標 (緯度: 34.99, 経度: 135.71)
-        url = "https://api.open-meteo.com/v1/forecast?latitude=34.99&longitude=135.71&current_weather=true&timezone=Asia%2FTokyo"
-        res = requests.get(url, timeout=3).json()
-        cw = res.get("current_weather", {})
-        temp = cw.get("temperature", "--")
-        wcode = cw.get("weathercode", 0)
-        
-        # WMO天気コードを簡易的に変換
-        if wcode == 0: weather_str = "快晴 ☀️"
-        elif wcode in [1, 2, 3]: weather_str = "晴れ/曇り ⛅"
-        elif wcode in [45, 48]: weather_str = "霧 🌫️"
-        elif wcode in [51, 53, 55, 56, 57]: weather_str = "霧雨 🌧️"
-        elif wcode in [61, 63, 65, 66, 67]: weather_str = "雨 ☔"
-        elif wcode in [71, 73, 75, 77, 85, 86]: weather_str = "雪 ❄️"
-        elif wcode in [80, 81, 82]: weather_str = "にわか雨 🌦️"
-        elif wcode >= 95: weather_str = "雷雨 ⛈️"
-        else: weather_str = "不明"
-        
-        return f"{weather_str} / {temp}℃"
-    except Exception:
-        return "取得失敗 ⚠️ (Offline)"
 
 # --- 15秒延長 ＋ Windows風ぐるぐるロード追加の最強演出CSS ---
 st.markdown("""
@@ -143,12 +116,6 @@ li[data-baseweb="option"][aria-selected="true"] {
 .spec-ng {
     color: #ff7b72;
     font-weight: bold;
-}
-
-.env-data {
-    color: #a5d6ff;
-    font-family: monospace;
-    font-size: 13px;
 }
 
 /* --- 演出コンテナ --- */
@@ -496,14 +463,8 @@ if not st.session_state.booted:
     boot_placeholder.empty()
     st.rerun()
 
-# ==========================================
-# 起動完了後のメインコンテンツ
-# ==========================================
-
-
-
-# --- ヘッダー部分（左：ロゴ、中央：タイトル、右：スペック＆環境表） ---
-col1, col2, col3 = st.columns([1.2, 2.2, 2.5])
+# --- ヘッダー部分（左：ロゴ、中央：タイトル、右：スペック表） ---
+col1, col2, col3 = st.columns([1.2, 2.2, 2.2])
 
 with col1:
     st.image("Kawase.jpg", width=200)
@@ -515,9 +476,8 @@ with col2:
 with col3:
     st.markdown(f"""
     <div class="top-popup-container">
-        <div class="popup-title">SYSTEM SPEC & ENVIRONMENT DATA</div>
+        <div class="popup-title">SYSTEM SPEC & REQUIREMENT CHECK</div>
         <div class="popup-grid">
-            </div>
             <div class="popup-item">
                 RAM: {used_ram_gb} GB / {total_ram_gb} GB 
                 <span class="{ram_status_class}">[基準差: {ram_diff_str}]</span>
@@ -525,6 +485,9 @@ with col3:
             <div class="popup-item">
                 CPU: {cpu_cores}C ({max_cpu_freq_ghz}GHz / {cpu_usage}%) 
                 <span class="{cpu_status_class}">[基準差: {cpu_core_diff_str}C / {cpu_freq_diff_str}]</span>
+            </div>
+            <div class="popup-item">
+                ステータス: <span class="spec-ok">正常稼働中</span>
             </div>
         </div>
     </div>
