@@ -517,8 +517,6 @@ with col3:
     <div class="top-popup-container">
         <div class="popup-title">SYSTEM SPEC & ENVIRONMENT DATA</div>
         <div class="popup-grid">
-            <div class="popup-item">
-                an>
             </div>
             <div class="popup-item">
                 RAM: {used_ram_gb} GB / {total_ram_gb} GB 
